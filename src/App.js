@@ -79,11 +79,12 @@ const parseXmlProductsDetails = (data) => {
   }
 
   const parsed = parser(data)
+  const version = Object.keys(parsed)[0]
   const Fornitore =
-    parsed.ns4.FatturaElettronicaHeader.CedentePrestatore.DatiAnagrafici.Anagrafica.Denominazione || ''
+    parsed[version].FatturaElettronicaHeader.CedentePrestatore.DatiAnagrafici.Anagrafica.Denominazione || ''
   const FornitoreCodice =
-    parsed.ns4.FatturaElettronicaHeader.CedentePrestatore.DatiAnagrafici.IdFiscaleIVA.IdCodice || ''
-  const lines = parsed.ns4.FatturaElettronicaBody.DatiBeniServizi.DettaglioLinee
+    parsed[version].FatturaElettronicaHeader.CedentePrestatore.DatiAnagrafici.IdFiscaleIVA.IdCodice || ''
+  const lines = parsed[version].FatturaElettronicaBody.DatiBeniServizi.DettaglioLinee
   const parsedLines = []
   for (const line of lines) {
     const CodiceArticolo = line.CodiceArticolo || {CodiceTipo: '', CodiceValore: ''}
@@ -130,23 +131,26 @@ const parseFile = async file => {
   if (parsedLines[0] !== undefined) {
     const csvHeader = Object.keys(parsedLines[0]).toString()
     const csvBody = convertToCSV(parsedLines)
-    return `${csvHeader}\n${csvBody}`
+    return [csvBody, csvHeader]
   }
-  return ''
+  throw new Error('')
 }
 
 const parseFiles = async files => {
   try {
     const parsedFiles = []
     for (const file of files) {
-      const parsed = await parseFile(file)
-      parsedFiles.push(parsed)
+      const [body, header] = await parseFile(file)
+      if (parsedFiles.length === 0) {
+        parsedFiles.push(header)
+      }
+      parsedFiles.push(body)
     }
-    const csv = parsedFiles.join('\n')
+    const csv = parsedFiles.join('')
     download('Fatture.csv', csv)
   }
   catch {
-    alert('Attention one or more files are not valid xml fatture')
+    alert('One or more files are not valid xml fatture')
   }
 }
 
@@ -203,7 +207,13 @@ const FileSelector = () => {
         >
           Excel
         </Button>
-        <Button variant={files.length === 0 ? 'outline' : 'primary'}>CSV</Button>
+        <Button 
+          disabled={files.length === 0 ? true : false}
+          onClick={() => parseFiles(files)}
+          variant={files.length === 0 ? 'outline' : 'primary'}
+        >
+          CSV
+        </Button>
       </Flex>
       <Text mt='5%'>{`${files.length} ${files.length === 1 ? 'file' : 'files'} selected `}</Text>
     </Flex>
