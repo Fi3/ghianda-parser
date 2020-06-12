@@ -4,7 +4,28 @@ import { ThemeProvider } from 'emotion-theming'
 import theme from '@rebass/preset'
 import {Text, Flex, Box, Image, Button} from 'rebass'
 import { Input } from '@rebass/forms'
-import parser from './xml2json'
+//import parser from './xml2json'
+import parser from 'fast-xml-parser'
+import he from 'he'
+
+var options = {
+    attributeNamePrefix : "@_",
+    attrNodeName: "attr", //default is 'false'
+    textNodeName : "#text",
+    ignoreAttributes : true,
+    ignoreNameSpace : false,
+    allowBooleanAttributes : false,
+    parseNodeValue : true,
+    parseAttributeValue : false,
+    trimValues: true,
+    cdataTagName: "__cdata", //default is 'false'
+    cdataPositionChar: "\\c",
+    parseTrueNumberOnly: false,
+    arrayMode: false, //"strict"
+    attrValueProcessor: (val, attrName) => he.decode(val, {isAttributeValue: true}),//default is a=>a
+    tagValueProcessor : (val, tagName) => he.decode(val), //default is a=>a
+    stopNodes: ["parse-me-as-string"]
+};
 
 function convertToCSV(array) {
   //var array = typeof objArray != 'object' ? JSON.parse(objArray) : objArray;
@@ -78,13 +99,14 @@ const parseXmlProductsDetails = (data) => {
     , AltriDatiGestionaliData: ''
   }
 
-  const parsed = parser(data)
-  const version = Object.keys(parsed)[0]
+  const parsed = parser.parse(data,options)
+  const version = Object.keys(parsed)
+  const fattura = parsed[version]
   const Fornitore =
-    parsed[version].FatturaElettronicaHeader.CedentePrestatore.DatiAnagrafici.Anagrafica.Denominazione || ''
+    fattura.FatturaElettronicaHeader.CedentePrestatore.DatiAnagrafici.Anagrafica.Denominazione || ''
   const FornitoreCodice =
-    parsed[version].FatturaElettronicaHeader.CedentePrestatore.DatiAnagrafici.IdFiscaleIVA.IdCodice || ''
-  const lines = parsed[version].FatturaElettronicaBody.DatiBeniServizi.DettaglioLinee
+    fattura.FatturaElettronicaHeader.CedentePrestatore.DatiAnagrafici.IdFiscaleIVA.IdCodice || ''
+  const lines = fattura.FatturaElettronicaBody.DatiBeniServizi.DettaglioLinee
   const parsedLines = []
   for (const line of lines) {
     const CodiceArticolo = line.CodiceArticolo || {CodiceTipo: '', CodiceValore: ''}
@@ -149,7 +171,8 @@ const parseFiles = async files => {
     const csv = parsedFiles.join('')
     download('Fatture.csv', csv)
   }
-  catch {
+  catch(e) {
+    console.log(e)
     alert('One or more files are not valid xml fatture')
   }
 }
