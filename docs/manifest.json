@@ -13,7 +13,7 @@
       "sizes": "512x512"
     }
   ],
-  "start_url": ".",
+  "start_url": "https://fi3.github.io/ghianda-parser",
   "display": "standalone",
   "theme_color": "#000000",
   "background_color": "#ffffff"
