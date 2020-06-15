@@ -7,6 +7,7 @@ import { Input } from '@rebass/forms'
 //import parser from './xml2json'
 import parser from 'fast-xml-parser'
 import he from 'he'
+import XLSX from 'xlsx'
 
 var options = {
     attributeNamePrefix : "@_",
@@ -143,6 +144,9 @@ const parseXmlProductsDetails = (data) => {
     }
 
     parsedLines.push({...lineTemplate, ...line, ...customFields})
+    //if (parseFloat(lineTemplate.PrezzoTotale > 0)) {
+    //  parsedLines.push({...lineTemplate, ...line, ...customFields})
+    //}
   }
   return parsedLines
 }
@@ -154,6 +158,15 @@ const parseFile = async file => {
     const csvHeader = Object.keys(parsedLines[0]).toString()
     const csvBody = convertToCSV(parsedLines)
     return [csvBody, csvHeader]
+  }
+  throw new Error('')
+}
+
+const parseFileExcell = async file => {
+  const text = await file2text(file)
+  const parsedLines = parseXmlProductsDetails(text)
+  if (parsedLines[0] !== undefined) {
+    return parsedLines
   }
   throw new Error('')
 }
@@ -170,6 +183,24 @@ const parseFiles = async files => {
     }
     const csv = parsedFiles.join('')
     download('Fatture.csv', csv)
+  }
+  catch(e) {
+    console.log(e)
+    alert('One or more files are not valid xml fatture')
+  }
+}
+const parseFilesExcell = async files => {
+  try {
+    const parsedFiles = []
+    for (const file of files) {
+      const parsed = await parseFileExcell(file)
+      parsedFiles.push(parsed)
+    }
+    const book = XLSX.utils.book_new();
+    const parsedLines = parsedFiles.flat()
+    const sheet = XLSX.utils.json_to_sheet(parsedLines, {header: Object.keys(parsedLines)})
+    XLSX.utils.book_append_sheet(book, sheet, 'Fatture')
+    XLSX.writeFile(book, 'Fatture.xls')
   }
   catch(e) {
     console.log(e)
@@ -225,7 +256,7 @@ const FileSelector = () => {
       <Flex mt='3%' justifyContent='space-around' width='50%'>
         <Button 
           disabled={files.length === 0 ? true : false}
-          onClick={() => parseFiles(files)}
+          onClick={() => parseFilesExcell(files)}
           variant={files.length === 0 ? 'outline' : 'primary'}
         >
           Excel
