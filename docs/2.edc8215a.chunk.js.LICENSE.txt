@@ -4,6 +4,13 @@ object-assign
 @license MIT
 */
 
+/*!
+ * The buffer module from node.js, for the browser.
+ *
+ * @author   Feross Aboukhadijeh <http://feross.org>
+ * @license  MIT
+ */
+
 /*! https://mths.be/he v1.2.0 by @mathias | MIT license */
 
 /** @license React v0.19.1
