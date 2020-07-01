@@ -103,6 +103,8 @@ const parseXmlProductsDetails = (data) => {
   const parsed = parser.parse(data,options)
   const version = Object.keys(parsed)
   const fattura = parsed[version]
+  const ImportoTotale =
+    fattura.FatturaElettronicaBody.DatiGenerali.DatiGeneraliDocumento.ImportoTotaleDocumento || ''
   const Fornitore =
     fattura.FatturaElettronicaHeader.CedentePrestatore.DatiAnagrafici.Anagrafica.Denominazione || ''
   const FornitoreCodice =
@@ -141,6 +143,7 @@ const parseXmlProductsDetails = (data) => {
       , AltriDatiGestionaliData
       , Fornitore
       , FornitoreCodice
+      , ImportoTotale
     }
 
     parsedLines.push({...lineTemplate, ...line, ...customFields})
@@ -198,7 +201,7 @@ const parseFilesExcell = async files => {
     }
     const book = XLSX.utils.book_new();
     const parsedLines = parsedFiles.flat()
-    const sheet = XLSX.utils.json_to_sheet(parsedLines, {header: Object.keys(parsedLines)})
+    const sheet = XLSX.utils.json_to_sheet(parsedLines )
     XLSX.utils.book_append_sheet(book, sheet, 'Fatture')
     XLSX.writeFile(book, 'Fatture.xls')
   }

@@ -1,6 +1,6 @@
 self.__precacheManifest = (self.__precacheManifest || []).concat([
   {
-    "revision": "02df5427954c212f32f6e3df7cc90cfe",
+    "revision": "ffc3d43b991f45f37fc2e801db72de0f",
     "url": "/ghianda-parser/index.html"
   },
   {
@@ -12,8 +12,8 @@ self.__precacheManifest = (self.__precacheManifest || []).concat([
     "url": "/ghianda-parser/static/js/2.edc8215a.chunk.js.LICENSE.txt"
   },
   {
-    "revision": "e18de0979715275cd1ed",
-    "url": "/ghianda-parser/static/js/main.fba185a2.chunk.js"
+    "revision": "9a278366d8715e232d20",
+    "url": "/ghianda-parser/static/js/main.9ed2bed3.chunk.js"
   },
   {
     "revision": "d471148ea373761f1984",

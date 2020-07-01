@@ -14,7 +14,7 @@
 importScripts("https://storage.googleapis.com/workbox-cdn/releases/4.3.1/workbox-sw.js");
 
 importScripts(
-  "/ghianda-parser/precache-manifest.62091025b6364447931a95041097beaf.js"
+  "/ghianda-parser/precache-manifest.c1042b52cbf6ead41d276dc1cbe4208c.js"
 );
 
 self.addEventListener('message', (event) => {
