@@ -1,19 +1,19 @@
 {
   "files": {
-    "main.js": "/ghianda-parser/static/js/main.9ed2bed3.chunk.js",
-    "main.js.map": "/ghianda-parser/static/js/main.9ed2bed3.chunk.js.map",
+    "main.js": "/ghianda-parser/static/js/main.86169db6.chunk.js",
+    "main.js.map": "/ghianda-parser/static/js/main.86169db6.chunk.js.map",
     "runtime-main.js": "/ghianda-parser/static/js/runtime-main.c602b906.js",
     "runtime-main.js.map": "/ghianda-parser/static/js/runtime-main.c602b906.js.map",
     "static/js/2.edc8215a.chunk.js": "/ghianda-parser/static/js/2.edc8215a.chunk.js",
     "static/js/2.edc8215a.chunk.js.map": "/ghianda-parser/static/js/2.edc8215a.chunk.js.map",
     "index.html": "/ghianda-parser/index.html",
-    "precache-manifest.c1042b52cbf6ead41d276dc1cbe4208c.js": "/ghianda-parser/precache-manifest.c1042b52cbf6ead41d276dc1cbe4208c.js",
+    "precache-manifest.f5fb8316c66db21c977ba50711606b91.js": "/ghianda-parser/precache-manifest.f5fb8316c66db21c977ba50711606b91.js",
     "service-worker.js": "/ghianda-parser/service-worker.js",
     "static/js/2.edc8215a.chunk.js.LICENSE.txt": "/ghianda-parser/static/js/2.edc8215a.chunk.js.LICENSE.txt"
   },
   "entrypoints": [
     "static/js/runtime-main.c602b906.js",
     "static/js/2.edc8215a.chunk.js",
-    "static/js/main.9ed2bed3.chunk.js"
+    "static/js/main.86169db6.chunk.js"
   ]
 }

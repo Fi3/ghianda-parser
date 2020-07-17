@@ -109,7 +109,10 @@ const parseXmlProductsDetails = (data) => {
     fattura.FatturaElettronicaHeader.CedentePrestatore.DatiAnagrafici.Anagrafica.Denominazione || ''
   const FornitoreCodice =
     fattura.FatturaElettronicaHeader.CedentePrestatore.DatiAnagrafici.IdFiscaleIVA.IdCodice || ''
-  const lines = fattura.FatturaElettronicaBody.DatiBeniServizi.DettaglioLinee
+  let lines = fattura.FatturaElettronicaBody.DatiBeniServizi.DettaglioLinee
+  if (! Array.isArray(lines)) {
+    lines = [lines]
+  }
   const parsedLines = []
   for (const line of lines) {
     const CodiceArticolo = line.CodiceArticolo || {CodiceTipo: '', CodiceValore: ''}
@@ -175,42 +178,45 @@ const parseFileExcell = async file => {
 }
 
 const parseFiles = async files => {
-  try {
-    const parsedFiles = []
-    for (const file of files) {
-      const [body, header] = await parseFile(file)
-      if (parsedFiles.length === 0) {
-        parsedFiles.push(header)
-      }
-      parsedFiles.push(body)
+  const parsedFiles = []
+  for (const file of files) {
+    let body
+    let header
+    try {
+      [body, header] = await parseFile(file)
+    } catch(e) {
+        alert(`One or more files are not valid xml fatture ${file.name}`)
+        continue
     }
-    const csv = parsedFiles.join('')
-    download('Fatture.csv', csv)
-  }
-  catch(e) {
-    console.log(e)
-    alert('One or more files are not valid xml fatture')
-  }
-}
-const parseFilesExcell = async files => {
-  try {
-    const parsedFiles = []
-    for (const file of files) {
-      const parsed = await parseFileExcell(file)
-      parsedFiles.push(parsed)
+    if (parsedFiles.length === 0) {
+      parsedFiles.push(header)
     }
-    const book = XLSX.utils.book_new();
-    const parsedLines = parsedFiles.flat()
-    const sheet = XLSX.utils.json_to_sheet(parsedLines )
-    XLSX.utils.book_append_sheet(book, sheet, 'Fatture')
-    XLSX.writeFile(book, 'Fatture.xls')
+    parsedFiles.push(body)
   }
-  catch(e) {
-    console.log(e)
-    alert('One or more files are not valid xml fatture')
-  }
+  const csv = parsedFiles.join('')
+  download('Fatture.csv', csv)
 }
 
+const parseFilesExcell = async files => {
+  const parsedFiles = []
+  for (const file of files) {
+    let parsed
+    try {
+      parsed = await parseFileExcell(file)
+    } catch(e) {
+        alert(`One or more files are not valid xml fatture ${file.name}`)
+        continue
+    }
+    parsedFiles.push(parsed)
+  }
+  const book = XLSX.utils.book_new();
+  const parsedLines = parsedFiles.flat()
+  const sheet = XLSX.utils.json_to_sheet(parsedLines )
+  XLSX.utils.book_append_sheet(book, sheet, 'Fatture')
+  XLSX.writeFile(book, 'Fatture.xls')
+}
+
+// IT0526289001420154_4RO0B.xml
 
 const Header = () =>
   <Flex
