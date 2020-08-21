@@ -72,6 +72,8 @@ const parseXmlProductsDetails = (data) => {
     NumeroLinea: ''
     , Fornitore: ''
     , FornitoreCodice: ''
+    , DataFattura: ''
+    , NumeroFattura: ''
     //, CodiceArticolo: ''
     , CodiceArticoloTipo: ''
     , CodiceArticoloValore: ''
@@ -105,6 +107,10 @@ const parseXmlProductsDetails = (data) => {
   const fattura = parsed[version]
   const ImportoTotale =
     fattura.FatturaElettronicaBody.DatiGenerali.DatiGeneraliDocumento.ImportoTotaleDocumento || ''
+  const DataFattura =
+    fattura.FatturaElettronicaBody.DatiGenerali.DatiGeneraliDocumento.Data || ''
+  const NumeroFattura =
+    fattura.FatturaElettronicaBody.DatiGenerali.DatiGeneraliDocumento.Numero || ''
   const Fornitore =
     fattura.FatturaElettronicaHeader.CedentePrestatore.DatiAnagrafici.Anagrafica.Denominazione || ''
   const FornitoreCodice =
@@ -147,6 +153,8 @@ const parseXmlProductsDetails = (data) => {
       , Fornitore
       , FornitoreCodice
       , ImportoTotale
+      , DataFattura
+      , NumeroFattura
     }
 
     parsedLines.push({...lineTemplate, ...line, ...customFields})
